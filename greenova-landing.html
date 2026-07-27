@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Greenova — AI 智慧城市基礎設施與即時環境分析平台</title>
+<meta name="description" content="Greenova 以機器學習與即時環境分析,協助城市政府與企業打造可量測、可預測、可最佳化的永續基礎設施。" />
+
+<!-- 字體:Space Grotesk(拉丁顯示)/ Noto Sans TC(中文)/ IBM Plex Mono(數據) -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<!-- ============================================================
+     Greenova 企業版單頁官網 — CSS 區塊
+     架構:
+       01 設計代碼(白色基底 + 企業深綠)
+       02 基礎重置與排版
+       03 通用元件(容器 / 按鈕 / 眉題)
+       04 固定導覽列
+       05 Hero + 主控台預覽
+       06 規格數據條
+       07 關於我們
+       08 核心技術三欄
+       09 平台實況(互動資料展示)
+       10 部署方案與資安合規
+       11 聯絡表單
+       12 頁尾
+       13 動效與響應式斷點
+     ============================================================ -->
+<style>
+/* ---------- 01 設計代碼 ---------- */
+:root {
+  /* 中性層:白底 + 板岩墨(佔畫面 ~88%) */
+  --bg:        oklch(0.988 0.002 150);
+  --surface:   oklch(1 0 0);
+  --surface-2: oklch(0.972 0.006 150);
+  --fg:        oklch(0.27 0.030 240);
+  --muted:     oklch(0.48 0.020 240);
+  --border:    oklch(0.912 0.006 150);
+
+  /* 唯一強調色:企業深綠(白底對比 ≥ 4.5:1,每屏至多兩處可見) */
+  --accent:        oklch(0.45 0.090 162);
+  --accent-strong: oklch(0.40 0.085 162);
+  --accent-ink:    oklch(0.985 0.010 150);
+  --accent-soft:   oklch(0.945 0.030 155);
+
+  /* 數據視覺專用色(僅圖表 / 網路動畫 / LIVE 指示,功能編碼非裝飾) */
+  --viz:   oklch(0.72 0.170 155);
+  --slate: oklch(0.52 0.030 240);
+
+  /* 語義色(僅表單錯誤) */
+  --danger: oklch(0.53 0.190 25);
+
+  /* 終端卡深色底 */
+  --ink: oklch(0.25 0.030 240);
+
+  --shadow-sm: 0 1px 2px color-mix(in oklab, var(--fg) 5%, transparent),
+               0 12px 32px -20px color-mix(in oklab, var(--fg) 16%, transparent);
+  --shadow-md: 0 2px 4px color-mix(in oklab, var(--fg) 6%, transparent),
+               0 24px 48px -24px color-mix(in oklab, var(--fg) 22%, transparent);
+
+  --font-display: "Space Grotesk", "Noto Sans TC", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-body:    "Noto Sans TC", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --radius: 8px;
+  --nav-h: 68px;
+}
+
+/* ---------- 02 基礎重置與排版 ---------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img, canvas, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+::selection { background: var(--accent); color: var(--accent-ink); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.18;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.section { padding: 104px 0; scroll-margin-top: var(--nav-h); }
+
+/* ---------- 03 通用元件 ---------- */
+.container { width: min(1180px, 100% - 3rem); margin-inline: auto; }
+
+/* 眉題:企業版採「方標 + 等寬大寫」編目式標註(ALL CAPS 必備加寬字距) */
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--accent);
+  margin-bottom: 18px;
+}
+.eyebrow::before { content: ""; width: 8px; height: 8px; background: var(--accent); }
+
+.section-head { max-width: 660px; margin-bottom: 64px; }
+.section-head h2 { font-size: clamp(1.8rem, 3.2vw, 2.5rem); margin-bottom: 18px; }
+.section-sub { color: var(--muted); max-width: 58ch; }
+
+/* 按鈕:主(深綠實心,立體)/ 次(白底描邊) */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 48px; padding: 0 26px;
+  border-radius: var(--radius);
+  font-weight: 600; font-size: 0.925rem; letter-spacing: 0.02em;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease, background-color 0.22s ease;
+}
+.btn-sm { min-height: 40px; padding: 0 18px; font-size: 0.85rem; }
+.btn-block { width: 100%; }
+.btn-primary {
+  background: var(--accent); color: var(--accent-ink);
+  box-shadow: 0 1px 0 color-mix(in oklab, var(--accent-ink) 22%, transparent) inset,
+              0 10px 24px -12px color-mix(in oklab, var(--accent) 55%, transparent);
+}
+.btn-primary:hover { background: var(--accent-strong); transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
+.btn-ghost { border: 1px solid var(--border); background: var(--surface); color: var(--fg); }
+.btn-ghost:hover { border-color: var(--muted); transform: translateY(-1px); }
+
+/* ---------- 04 固定導覽列 ---------- */
+.site-nav {
+  position: fixed; inset: 0 0 auto 0; z-index: 50;
+  height: var(--nav-h);
+  background: color-mix(in oklab, var(--bg) 82%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner { height: var(--nav-h); display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; }
+.brand-word { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; letter-spacing: -0.01em; }
+.brand-sub { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.14em; color: var(--muted); text-transform: uppercase; border-left: 1px solid var(--border); padding-left: 10px; margin-left: 2px; }
+
+.nav-links { display: none; }
+.nav-links a { color: var(--muted); font-size: 0.9rem; font-weight: 500; letter-spacing: 0.02em; padding: 10px 2px; transition: color 0.2s ease; }
+.nav-links a:hover { color: var(--fg); }
+.nav-actions { display: flex; align-items: center; gap: 12px; }
+.nav-cta { display: none; }
+.nav-toggle { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); }
+.nav-links.is-open {
+  display: flex; flex-direction: column; gap: 2px;
+  position: absolute; top: calc(var(--nav-h) + 8px); left: 20px; right: 20px;
+  padding: 14px; border-radius: var(--radius);
+  border: 1px solid var(--border); background: var(--surface);
+  box-shadow: var(--shadow-md);
+}
+.nav-links.is-open a { padding: 12px; border-radius: 6px; }
+.nav-links.is-open a:hover { background: var(--surface-2); }
+
+/* ---------- 05 Hero + 主控台預覽 ---------- */
+.hero { padding: calc(var(--nav-h) + 72px) 0 88px; border-bottom: 1px solid var(--border); }
+.hero-grid { display: grid; gap: 56px; align-items: center; }
+
+.hero h1 { font-size: clamp(2.3rem, 4.6vw, 3.6rem); line-height: 1.12; letter-spacing: -0.025em; margin-bottom: 22px; }
+.hero-sub { color: var(--muted); font-size: clamp(1rem, 1.4vw, 1.1rem); max-width: 54ch; margin-bottom: 36px; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 48px; }
+
+/* 客戶標誌列(誠實佔位,等待真實授權標誌) */
+.trust { border-top: 1px solid var(--border); padding-top: 24px; }
+.trust-label { font-size: 0.8rem; color: var(--muted); margin-bottom: 16px; }
+.trust-logos { list-style: none; display: flex; flex-wrap: wrap; gap: 10px; }
+.logo-ph {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 108px; height: 44px; padding: 0 16px;
+  border: 1px dashed color-mix(in oklab, var(--muted) 45%, transparent);
+  border-radius: 6px;
+  font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em; color: var(--muted);
+}
+
+/* 主控台預覽卡:以「產品畫面」取代抽象動畫,企業感核心 */
+.console {
+  border: 1px solid var(--border); border-radius: 12px;
+  background: var(--surface); box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+.console-head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 18px; border-bottom: 1px solid var(--border); background: var(--surface-2);
+}
+.console-lights { display: inline-flex; gap: 6px; }
+.console-lights i { width: 8px; height: 8px; border-radius: 50%; background: color-mix(in oklab, var(--muted) 35%, transparent); }
+.console-title { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.console-chip {
+  margin-left: auto; display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.08em; color: var(--accent);
+}
+.live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--viz); animation: pulse 1.8s ease-in-out infinite; }
+.console-canvas { width: 100%; height: 264px; background: var(--bg); }
+.console-foot { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--border); }
+.console-kpi { padding: 14px 18px; border-left: 1px solid var(--border); }
+.console-kpi:first-child { border-left: 0; }
+.console-kpi span { display: block; font-size: 0.72rem; color: var(--muted); letter-spacing: 0.04em; margin-bottom: 4px; }
+.console-kpi b { font-family: var(--font-mono); font-weight: 500; font-size: 1.05rem; letter-spacing: -0.01em; }
+.console-note { padding: 10px 18px; border-top: 1px solid var(--border); font-size: 0.72rem; color: var(--muted); }
+
+@keyframes pulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+
+/* ---------- 06 規格數據條(工程規格,非營運實績) ---------- */
+.specs { border-bottom: 1px solid var(--border); background: var(--surface); }
+.specs-grid { display: grid; grid-template-columns: repeat(2, 1fr); }
+.spec { padding: 28px 24px; border-left: 1px solid var(--border); }
+.spec:nth-child(odd) { border-left: 0; }
+.spec:nth-child(n + 3) { border-top: 1px solid var(--border); }
+.spec-value { font-family: var(--font-mono); font-weight: 500; font-size: clamp(1.4rem, 2.4vw, 1.9rem); letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 6px; }
+.spec-value span { font-size: 0.62em; color: var(--muted); margin-left: 4px; }
+.spec-label { font-size: 0.78rem; color: var(--muted); letter-spacing: 0.02em; }
+
+/* ---------- 07 關於我們 ---------- */
+.about-grid { display: grid; gap: 48px; }
+.about-lead h2 { font-size: clamp(1.8rem, 3.2vw, 2.5rem); }
+.about-body .lead { font-size: 1.12rem; font-weight: 500; margin-bottom: 16px; max-width: 56ch; }
+.about-body > p:not(.lead) { color: var(--muted); max-width: 62ch; }
+.principles { list-style: none; margin-top: 44px; }
+.principles li { display: flex; gap: 22px; align-items: flex-start; padding: 24px 0; border-top: 1px solid var(--border); }
+.principles li:last-child { border-bottom: 1px solid var(--border); }
+.principle-num { font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); padding-top: 4px; }
+.principles h3 { font-size: 1.05rem; margin-bottom: 6px; }
+.principles p { color: var(--muted); font-size: 0.925rem; max-width: 54ch; }
+
+/* ---------- 08 核心技術三欄 ---------- */
+.features { background: var(--surface-2); border-block: 1px solid var(--border); }
+.feature-grid { display: grid; gap: 20px; grid-template-columns: 1fr; }
+.feature-card {
+  display: flex; flex-direction: column;
+  padding: 30px 28px;
+  border: 1px solid var(--border); border-radius: 12px;
+  background: var(--surface); box-shadow: var(--shadow-sm);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.feature-card:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in oklab, var(--accent) 40%, transparent);
+  box-shadow: var(--shadow-md);
+}
+.feature-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 26px; }
+.feature-num { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.1em; color: var(--muted); }
+.feature-icon {
+  width: 44px; height: 44px; border-radius: var(--radius);
+  display: flex; align-items: center; justify-content: center;
+  background: var(--accent-soft); color: var(--accent);
+}
+.feature-card h3 { font-size: 1.2rem; margin-bottom: 4px; }
+.feature-en { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+.feature-desc { color: var(--muted); font-size: 0.94rem; margin-bottom: 24px; }
+.feature-specs { margin-top: auto; border-top: 1px solid var(--border); }
+.feature-specs > div { display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.feature-specs > div:last-child { border-bottom: 0; }
+.feature-specs dt { font-size: 0.8rem; color: var(--muted); }
+.feature-specs dd { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.02em; text-align: right; }
+
+/* ---------- 09 平台實況(互動資料展示) ---------- */
+.platform-grid { display: grid; gap: 40px; align-items: start; }
+.platform-copy h2 { font-size: clamp(1.8rem, 3.2vw, 2.5rem); margin-bottom: 18px; }
+.platform-copy > p { color: var(--muted); max-width: 52ch; margin-bottom: 32px; }
+
+/* API 能力清單:面向開發者的企業規格表 */
+.api-list { list-style: none; border-top: 1px solid var(--border); }
+.api-list li { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+.api-method {
+  flex: none; width: 52px; text-align: center;
+  font-family: var(--font-mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em;
+  color: var(--accent); background: var(--accent-soft);
+  border-radius: 4px; padding: 4px 0;
+}
+.api-path { flex: none; font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.01em; }
+.api-desc { margin-left: auto; font-size: 0.82rem; color: var(--muted); text-align: right; }
+
+.chart-card {
+  border: 1px solid var(--border); border-radius: 12px;
+  background: var(--surface); box-shadow: var(--shadow-sm);
+  padding: 24px; min-width: 0; /* 防 grid 內 canvas 撐破版面 */
+}
+.chart-head { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-bottom: 20px; }
+.chart-title { font-weight: 600; font-size: 1rem; }
+.chart-unit { font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); letter-spacing: 0.04em; }
+.chart-live { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; color: var(--accent); }
+.chart-live.is-paused { color: var(--muted); }
+.chart-live.is-paused .live-dot { background: var(--muted); animation: none; }
+#demo-chart { width: 100%; height: 250px; }
+.chart-disclaimer { margin-top: 16px; font-size: 0.76rem; color: var(--muted); }
+
+/* 模擬指標磁貼列 */
+.demo-stats { display: grid; gap: 16px; grid-template-columns: 1fr; margin-top: 20px; }
+.stat-tile { border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow-sm); padding: 20px 22px; }
+.stat-label { font-size: 0.76rem; color: var(--muted); letter-spacing: 0.04em; margin-bottom: 8px; }
+.stat-value { font-family: var(--font-mono); font-size: 1.65rem; font-weight: 500; letter-spacing: -0.01em; line-height: 1.2; }
+.stat-unit { font-size: 0.78rem; color: var(--muted); margin-left: 8px; }
+.stat-delta { font-family: var(--font-mono); font-size: 0.74rem; color: var(--muted); margin-top: 6px; }
+
+/* API 回應終端卡(整頁唯一深色元素:文件式程式碼區) */
+.terminal-card { margin-top: 20px; border-radius: 12px; background: var(--ink); overflow: hidden; box-shadow: var(--shadow-md); }
+.terminal-head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 18px; border-bottom: 1px solid color-mix(in oklab, var(--accent-ink) 12%, transparent);
+  font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em;
+  color: color-mix(in oklab, var(--accent-ink) 55%, transparent);
+}
+.terminal-card pre { padding: 22px 24px; overflow-x: auto; }
+.terminal-card code { font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.8; color: color-mix(in oklab, var(--accent-ink) 88%, transparent); }
+.terminal-card .t-k { color: color-mix(in oklab, var(--accent-ink) 50%, transparent); }
+.terminal-card .t-v { color: var(--viz); }
+
+/* ---------- 10 部署方案與資安合規 ---------- */
+.deploy { background: var(--surface-2); border-block: 1px solid var(--border); }
+.deploy-grid { display: grid; gap: 20px; grid-template-columns: 1fr; }
+.deploy-card { border: 1px solid var(--border); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow-sm); padding: 28px; }
+.deploy-card h3 { font-size: 1.1rem; margin-bottom: 4px; }
+.deploy-en { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+.deploy-card > p { color: var(--muted); font-size: 0.92rem; margin-bottom: 20px; }
+.deploy-specs { border-top: 1px solid var(--border); }
+.deploy-specs > div { display: flex; justify-content: space-between; gap: 16px; padding: 9px 0; border-bottom: 1px solid var(--border); }
+.deploy-specs > div:last-child { border-bottom: 0; }
+.deploy-specs dt { font-size: 0.8rem; color: var(--muted); }
+.deploy-specs dd { font-family: var(--font-mono); font-size: 0.78rem; text-align: right; }
+
+/* 資安合規條:框架對齊聲明(設計原則,非認證宣稱) */
+.compliance { margin-top: 40px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); padding: 28px; }
+.compliance-title { font-weight: 600; font-size: 1rem; margin-bottom: 6px; }
+.compliance-sub { font-size: 0.84rem; color: var(--muted); margin-bottom: 20px; }
+.compliance-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 10px; }
+.compliance-chips li {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid var(--border); border-radius: 999px;
+  padding: 8px 16px; font-size: 0.82rem; font-weight: 500;
+}
+.compliance-chips svg { color: var(--accent); flex: none; }
+
+/* ---------- 11 聯絡表單 ---------- */
+.contact-grid { display: grid; gap: 48px; }
+.contact-intro h2 { font-size: clamp(1.8rem, 3.2vw, 2.5rem); margin-bottom: 16px; }
+.contact-intro > p { color: var(--muted); max-width: 50ch; }
+.contact-rows { list-style: none; margin-top: 36px; border-top: 1px solid var(--border); }
+.contact-rows li { display: flex; align-items: baseline; gap: 18px; padding: 16px 0; border-bottom: 1px solid var(--border); }
+.contact-rows .row-label { flex: none; width: 88px; font-size: 0.78rem; color: var(--muted); letter-spacing: 0.04em; }
+.contact-rows a { font-family: var(--font-mono); font-size: 0.88rem; }
+.contact-rows a:hover { color: var(--accent); }
+.contact-rows .row-val { font-size: 0.9rem; }
+
+.form-card { border: 1px solid var(--border); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow-sm); padding: 32px; }
+.form-title { font-weight: 600; font-size: 1.1rem; margin-bottom: 24px; }
+.form-row { display: grid; gap: 18px; margin-bottom: 18px; }
+.field label { display: block; font-size: 0.84rem; font-weight: 500; margin-bottom: 8px; }
+.field label .req { color: var(--accent); margin-left: 2px; }
+.field input, .field select, .field textarea {
+  width: 100%; min-height: 48px; padding: 12px 14px;
+  border-radius: var(--radius); border: 1px solid var(--border);
+  background: var(--bg); color: var(--fg);
+  font: inherit; font-size: 0.94rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.field textarea { min-height: 120px; resize: vertical; }
+.field input::placeholder, .field textarea::placeholder { color: var(--muted); }
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: none; border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 16%, transparent);
+}
+.field.has-error input, .field.has-error select, .field.has-error textarea { border-color: var(--danger); }
+.field-error { display: none; margin-top: 8px; font-size: 0.78rem; color: var(--danger); }
+.field.has-error .field-error { display: block; }
+
+/* 隱私同意列 */
+.consent { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 24px; }
+.consent input { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--accent); flex: none; }
+.consent label { font-size: 0.82rem; color: var(--muted); }
+.consent.has-error label { color: var(--danger); }
+
+.form-success { text-align: center; padding: 48px 24px; }
+.form-success h3 { font-size: 1.4rem; margin: 20px 0 12px; }
+.form-success p { color: var(--muted); max-width: 42ch; margin-inline: auto; }
+.ref-code { display: inline-block; margin-top: 20px; font-family: var(--font-mono); font-size: 0.85rem; letter-spacing: 0.08em; color: var(--accent); border: 1px solid var(--border); border-radius: 6px; padding: 10px 16px; }
+.success-icon { width: 56px; height: 56px; margin-inline: auto; border-radius: 50%; background: var(--accent-soft); display: flex; align-items: center; justify-content: center; color: var(--accent); }
+
+/* ---------- 12 頁尾 ---------- */
+.site-footer { border-top: 1px solid var(--border); background: var(--surface-2); padding: 72px 0 32px; }
+.footer-grid { display: grid; gap: 40px; margin-bottom: 56px; }
+.footer-brand p { color: var(--muted); font-size: 0.88rem; max-width: 32ch; margin-top: 16px; }
+.footer-col h4 { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 16px; }
+.footer-col ul { list-style: none; display: grid; gap: 10px; }
+.footer-col a { font-size: 0.88rem; color: var(--fg); opacity: 0.8; }
+.footer-col a:hover { opacity: 1; color: var(--accent); }
+.footer-bottom {
+  display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between;
+  padding-top: 24px; border-top: 1px solid var(--border);
+  font-size: 0.78rem; color: var(--muted);
+}
+.footer-legal { display: flex; gap: 24px; }
+.footer-legal a:hover { color: var(--fg); }
+
+/* ---------- 13 動效與響應式斷點 ---------- */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal.is-visible { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  .reveal { opacity: 1; transform: none; }
+}
+
+@media (min-width: 720px) {
+  .nav-toggle { display: none; }
+  .nav-cta { display: inline-flex; }
+  .nav-links { display: flex; align-items: center; gap: 30px; }
+  .form-row { grid-template-columns: 1fr 1fr; }
+  .feature-grid { grid-template-columns: repeat(3, 1fr); }
+  .deploy-grid { grid-template-columns: repeat(3, 1fr); }
+  .demo-stats { grid-template-columns: repeat(3, 1fr); }
+  .specs-grid { grid-template-columns: repeat(4, 1fr); }
+  .spec:nth-child(n + 3) { border-top: 0; }
+  .spec:not(:first-child) { border-left: 1px solid var(--border); }
+  .footer-grid { grid-template-columns: 1.6fr 1fr 1fr 1fr; }
+}
+
+@media (min-width: 1024px) {
+  .hero-grid { grid-template-columns: 6fr 5fr; gap: 72px; }
+  .about-grid { grid-template-columns: 0.85fr 1.15fr; gap: 88px; }
+  .platform-grid { grid-template-columns: 5fr 7fr; gap: 64px; }
+  .contact-grid { grid-template-columns: 1fr 1.1fr; gap: 80px; align-items: start; }
+  #demo-chart { height: 300px; }
+}
+</style>
+</head>
+<body>
+<!-- ============================================================
+     Greenova 企業版單頁官網 — HTML 區塊(語義化結構)
+     區塊:導覽 → Hero+主控台 → 規格條 → 關於 → 核心技術
+           → 平台實況 → 部署與資安 → 聯絡 → 頁尾
+     ============================================================ -->
+
+<!-- ===== 固定導覽列 ===== -->
+<header class="site-nav" data-od-id="site-nav">
+  <div class="container nav-inner">
+    <a class="brand" href="#top" aria-label="Greenova 首頁">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+        <rect x="1" y="1" width="24" height="24" rx="5" fill="var(--accent)" />
+        <path d="M7.5 16.5 11.5 11l2.8 3.6L18.5 9" stroke="var(--accent-ink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+        <circle cx="18.5" cy="9" r="1.5" fill="var(--accent-ink)" />
+      </svg>
+      <span class="brand-word">Greenova</span>
+      <span class="brand-sub">Urban Intelligence</span>
+    </a>
+
+    <nav class="nav-links" id="nav-menu" aria-label="主導覽">
+      <a href="#platform">平台</a>
+      <a href="#tech">核心技術</a>
+      <a href="#deploy">部署方案</a>
+      <a href="#about">關於我們</a>
+    </nav>
+
+    <div class="nav-actions">
+      <a class="btn btn-primary btn-sm nav-cta" href="#contact" data-od-id="nav-cta">預約演示</a>
+      <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-menu" aria-label="開啟選單">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M3 5.5h14M3 10h14M3 14.5h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ===== Hero + 主控台預覽 ===== -->
+  <section class="hero" data-od-id="hero">
+    <div class="container hero-grid">
+      <div>
+        <p class="eyebrow">AI 智慧城市基礎設施</p>
+        <h1 data-od-id="hero-heading">以人工智慧,<br />驅動永續城市</h1>
+        <p class="hero-sub">
+          Greenova 將機器學習與即時環境感測整合為單一平台,協助城市與企業即時掌握能源、
+          碳排與資源流向——從資料中心到路燈,每一度電都可量測、可預測、可最佳化。
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#contact" data-od-id="hero-cta-demo">預約企業演示</a>
+          <a class="btn btn-ghost" href="#platform" data-od-id="hero-cta-platform">瀏覽平台能力</a>
+        </div>
+
+        <!-- 客戶標誌列:佔位框,待真實授權標誌替換 -->
+        <div class="trust" data-od-id="trust-row">
+          <p class="trust-label">為城市政府、公用事業與企業基礎設施團隊而設計</p>
+          <ul class="trust-logos">
+            <li class="logo-ph">客戶標誌</li>
+            <li class="logo-ph">客戶標誌</li>
+            <li class="logo-ph">客戶標誌</li>
+            <li class="logo-ph">客戶標誌</li>
+            <li class="logo-ph">客戶標誌</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 主控台預覽:3D 動畫占位的企業版實作 —
+           以 2D Canvas 呈現城市感測網路;部署時可將 Three.js / WebGL 場景掛載至 #hero-net 直接替換 -->
+      <div class="console reveal" data-od-id="hero-console">
+        <div class="console-head">
+          <span class="console-lights" aria-hidden="true"><i></i><i></i><i></i></span>
+          <p class="console-title">Greenova Console — 城市感測網路</p>
+          <span class="console-chip"><span class="live-dot" aria-hidden="true"></span>即時</span>
+        </div>
+        <canvas id="hero-net" class="console-canvas" aria-hidden="true"></canvas>
+        <div class="console-foot">
+          <div class="console-kpi"><span>感測節點在線</span><b>8,742</b></div>
+          <div class="console-kpi"><span>作用中告警</span><b>0</b></div>
+          <div class="console-kpi"><span>端到端延遲</span><b>132 ms</b></div>
+        </div>
+        <p class="console-note">產品示意畫面,數值為模擬資料。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 規格數據條(工程規格與設計目標,非營運實績)===== -->
+  <section class="specs" aria-label="平台工程規格" data-od-id="specs-strip">
+    <div class="container specs-grid">
+      <div class="spec">
+        <p class="spec-value">&lt; 150<span>ms</span></p>
+        <p class="spec-label">感測到儀表板延遲 · 設計目標</p>
+      </div>
+      <div class="spec">
+        <p class="spec-value">100,000+<span>節點</span></p>
+        <p class="spec-label">單城市感測規模 · 架構規格</p>
+      </div>
+      <div class="spec">
+        <p class="spec-value">24 × 7</p>
+        <p class="spec-label">持續監控與事故告警 · 營運模式</p>
+      </div>
+      <div class="spec">
+        <p class="spec-value">ISO 27001</p>
+        <p class="spec-label">控制框架對齊 · 設計原則</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 關於我們 ===== -->
+  <section class="section" id="about" data-od-id="about">
+    <div class="container about-grid">
+      <div class="about-lead reveal">
+        <p class="eyebrow">關於 Greenova</p>
+        <h2 data-od-id="about-heading">銜接機器學習與<br />生態永續的斷層</h2>
+      </div>
+      <div class="about-body reveal">
+        <p class="lead">我們相信,城市的每一項基礎設施決策,都應該建立在即時、可驗證的環境數據之上。</p>
+        <p>
+          Greenova 由基礎設施工程師與機器學習研究者組成,致力將前沿模型轉化為可在城市規模
+          可靠運行的系統——從電網負載預測到碳排放製圖,協助決策者以數據取代直覺,
+          讓永續成為可量測的工程指標,而非口號。
+        </p>
+        <ul class="principles">
+          <li>
+            <span class="principle-num">01</span>
+            <div>
+              <h3>資料主權優先</h3>
+              <p>原始感測資料留在您的邊界內:支援私有雲與邊緣部署,金鑰與資料由您掌握。</p>
+            </div>
+          </li>
+          <li>
+            <span class="principle-num">02</span>
+            <div>
+              <h3>開放 API 優先</h3>
+              <p>每一項平台能力皆有對應的公開 API 與型別定義,可嵌入既有 SCADA、GIS 與 IoT 系統,不綁定供應商。</p>
+            </div>
+          </li>
+          <li>
+            <span class="principle-num">03</span>
+            <div>
+              <h3>可解釋的模型</h3>
+              <p>所有預測附帶置信區間與特徵歸因,讓工程師能審計每一個自動化決策。</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 核心技術(三欄)===== -->
+  <section class="section features" id="tech" data-od-id="features">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow">核心技術</p>
+        <h2 data-od-id="features-heading">三項核心技術,一個整合平台</h2>
+        <p class="section-sub">從預測、量測到邊緣執行,以模組化設計接入既有城市系統。</p>
+      </div>
+
+      <div class="feature-grid">
+        <!-- 01 預測式資源調度 -->
+        <article class="feature-card reveal" data-od-id="feature-card-predict">
+          <div class="feature-top">
+            <span class="feature-num">01</span>
+            <span class="feature-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <path d="M3 17l5-6 4 3 6-8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M15 6h3v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </div>
+          <h3>預測式資源調度</h3>
+          <p class="feature-en">Predictive Resource Allocation</p>
+          <p class="feature-desc">多變量時序模型整合天氣、歷史負載與即時感測資料,提前預測能源與水資源需求,在尖峰形成之前產生調度建議,削峰填谷。</p>
+          <dl class="feature-specs">
+            <div><dt>預測範圍</dt><dd>最長 72 小時</dd></div>
+            <div><dt>更新頻率</dt><dd>每 5 分鐘</dd></div>
+            <div><dt>輸出</dt><dd>調度建議 · API</dd></div>
+          </dl>
+        </article>
+
+        <!-- 02 即時碳足跡地圖 API -->
+        <article class="feature-card reveal" data-od-id="feature-card-carbon">
+          <div class="feature-top">
+            <span class="feature-num">02</span>
+            <span class="feature-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6" />
+                <path d="M3.5 12h17M12 3.5c2.8 2.4 2.8 14.6 0 17M12 3.5c-2.8 2.4-2.8 14.6 0 17" stroke="currentColor" stroke-width="1.6" />
+              </svg>
+            </span>
+          </div>
+          <h3>即時碳足跡地圖 API</h3>
+          <p class="feature-en">Real-Time Carbon Mapping APIs</p>
+          <p class="feature-desc">以感測器網格與電網資料推算區域級碳強度,透過版本化 REST 與 WebSocket API 輸出分鐘級更新,供儀表板與自動化系統直接消費。</p>
+          <dl class="feature-specs">
+            <div><dt>更新頻率</dt><dd>每 1 分鐘</dd></div>
+            <div><dt>空間解析度</dt><dd>區域級</dd></div>
+            <div><dt>介面</dt><dd>REST · WebSocket</dd></div>
+          </dl>
+        </article>
+
+        <!-- 03 邊緣 AI 感測整合 -->
+        <article class="feature-card reveal" data-od-id="feature-card-edge">
+          <div class="feature-top">
+            <span class="feature-num">03</span>
+            <span class="feature-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <rect x="7" y="7" width="10" height="10" rx="2.5" stroke="currentColor" stroke-width="1.6" />
+                <path d="M10 1.8v3M14 1.8v3M10 19.2v3M14 19.2v3M1.8 10h3M1.8 14h3M19.2 10h3M19.2 14h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+              </svg>
+            </span>
+          </div>
+          <h3>邊緣 AI 感測整合</h3>
+          <p class="feature-en">Edge AI Sensor Integration</p>
+          <p class="feature-desc">量化後的輕量模型在感測器端直接推論,僅回傳特徵與事件,大幅降低頻寬需求;模型 OTA 更新、離線緩衝與硬體信任根皆為標準配置。</p>
+          <dl class="feature-specs">
+            <div><dt>推論位置</dt><dd>裝置端</dd></div>
+            <div><dt>模型更新</dt><dd>OTA 編排</dd></div>
+            <div><dt>硬體安全</dt><dd>信任根</dd></div>
+          </dl>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 平台實況(互動資料展示區)===== -->
+  <section class="section" id="platform" data-od-id="platform">
+    <div class="container">
+      <div class="platform-grid">
+        <div class="platform-copy reveal">
+          <p class="eyebrow">平台實況</p>
+          <h2 data-od-id="platform-heading">從感測器到決策,<br />一個平台完成</h2>
+          <p>
+            右側為 Greenova 儀表板的精簡互動示意。正式環境接入您的感測網路後,
+            所有圖表皆以真實串流資料驅動;開發團隊則可透過下列 API 直接整合。
+          </p>
+          <ul class="api-list" data-od-id="api-list">
+            <li><span class="api-method">GET</span><span class="api-path">/v2/carbon/intensity</span><span class="api-desc">分鐘級碳強度查詢</span></li>
+            <li><span class="api-method">WS</span><span class="api-path">/v2/stream/sensors</span><span class="api-desc">感測器事件串流</span></li>
+            <li><span class="api-method">POST</span><span class="api-path">/v2/forecast/demand</span><span class="api-desc">需求預測工作</span></li>
+            <li><span class="api-method">GET</span><span class="api-path">/v2/assets/health</span><span class="api-desc">資產健康度</span></li>
+          </ul>
+        </div>
+
+        <!-- 互動圖表卡:此容器可替換為 WebGL / Three.js 視覺化 -->
+        <div class="chart-card reveal" data-od-id="demo-chart-card">
+          <div class="chart-head">
+            <div>
+              <p class="chart-title">區域電網碳強度</p>
+              <p class="chart-unit">gCO₂e / kWh · 滾動 60 秒</p>
+            </div>
+            <p class="chart-live" id="chart-live"><span class="live-dot" aria-hidden="true"></span>LIVE · 模擬</p>
+            <button class="btn btn-ghost btn-sm" id="chart-toggle" aria-pressed="true">暫停</button>
+          </div>
+          <canvas id="demo-chart" role="img" aria-label="模擬的區域電網碳強度即時折線圖"></canvas>
+          <p class="chart-disclaimer">※ 前端模擬資料流,僅供互動展示,不代表真實量測值。</p>
+        </div>
+      </div>
+
+      <!-- 模擬即時指標 -->
+      <div class="demo-stats" data-od-id="demo-tiles">
+        <div class="stat-tile reveal">
+          <p class="stat-label">電網負載(模擬)</p>
+          <p class="stat-value"><span id="stat-load">412.6</span><span class="stat-unit">MW</span></p>
+          <p class="stat-delta" id="stat-load-delta">— 較上一分鐘持平</p>
+        </div>
+        <div class="stat-tile reveal">
+          <p class="stat-label">感測器在線(模擬)</p>
+          <p class="stat-value"><span id="stat-sensors">8,742</span><span class="stat-unit">座節點</span></p>
+          <p class="stat-delta">覆蓋 6 個行政區</p>
+        </div>
+        <div class="stat-tile reveal">
+          <p class="stat-label">平均碳強度(模擬)</p>
+          <p class="stat-value"><span id="stat-carbon">412</span><span class="stat-unit">gCO₂e/kWh</span></p>
+          <p class="stat-delta" id="stat-carbon-delta">— 較上一分鐘持平</p>
+        </div>
+      </div>
+
+      <!-- API 回應示意(模擬資料) -->
+      <div class="terminal-card reveal" data-od-id="api-response">
+        <div class="terminal-head">
+          <span class="console-lights" aria-hidden="true"><i></i><i></i><i></i></span>
+          <p>GET /v2/carbon/intensity — 回應為模擬資料</p>
+        </div>
+        <pre><code><span class="t-k">$</span> curl -s "https://api.greenova.example/v2/carbon/intensity?zone=TPE-01"
+{
+  <span class="t-k">"zone"</span>: <span class="t-v">"TPE-01"</span>,
+  <span class="t-k">"carbon_intensity"</span>: { <span class="t-k">"value"</span>: <span class="t-v">412</span>, <span class="t-k">"unit"</span>: <span class="t-v">"gCO2e/kWh"</span> },
+  <span class="t-k">"trend_1h"</span>: <span class="t-v">"falling"</span>,
+  <span class="t-k">"confidence"</span>: <span class="t-v">0.94</span>,
+  <span class="t-k">"sources"</span>: [<span class="t-v">"edge-mesh"</span>, <span class="t-v">"grid-scada"</span>],
+  <span class="t-k">"ttl_seconds"</span>: <span class="t-v">60</span>
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 部署方案與資安合規 ===== -->
+  <section class="section deploy" id="deploy" data-od-id="deploy">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow">部署方案</p>
+        <h2 data-od-id="deploy-heading">配合您的治理邊界部署</h2>
+        <p class="section-sub">三種部署模式,對應不同規模、法規與資料主權需求。</p>
+      </div>
+
+      <div class="deploy-grid">
+        <article class="deploy-card reveal" data-od-id="deploy-card-saas">
+          <h3>雲端託管</h3>
+          <p class="deploy-en">Managed SaaS</p>
+          <p>由 Greenova 營運與維護,最快導入;適合試點專案與中型部署。</p>
+          <dl class="deploy-specs">
+            <div><dt>導入時間</dt><dd>數週</dd></div>
+            <div><dt>維運</dt><dd>我方負責</dd></div>
+            <div><dt>資料位置</dt><dd>託管區域</dd></div>
+          </dl>
+        </article>
+
+        <article class="deploy-card reveal" data-od-id="deploy-card-byoc">
+          <h3>私有雲</h3>
+          <p class="deploy-en">Bring Your Own Cloud</p>
+          <p>部署於您的 VPC 或機房,金鑰與資料由您掌握;適合公用事業與關鍵基礎設施。</p>
+          <dl class="deploy-specs">
+            <div><dt>導入時間</dt><dd>4–8 週</dd></div>
+            <div><dt>維運</dt><dd>共同維運</dd></div>
+            <div><dt>資料位置</dt><dd>您的邊界內</dd></div>
+          </dl>
+        </article>
+
+        <article class="deploy-card reveal" data-od-id="deploy-card-edge">
+          <h3>邊緣叢集</h3>
+          <p class="deploy-en">Edge Cluster</p>
+          <p>現場閘道器叢集,斷網時離線自治,恢復連線後自動同步;適合廠區與偏遠場域。</p>
+          <dl class="deploy-specs">
+            <div><dt>導入時間</dt><dd>視場域</dd></div>
+            <div><dt>維運</dt><dd>遠端 OTA</dd></div>
+            <div><dt>資料位置</dt><dd>本地優先</dd></div>
+          </dl>
+        </article>
+      </div>
+
+      <!-- 資安與合規:設計對齊聲明,非認證宣稱 -->
+      <div class="compliance reveal" data-od-id="compliance">
+        <p class="compliance-title">資安與合規設計</p>
+        <p class="compliance-sub">平台依下列框架與實務設計;正式認證時程歡迎於演示中洽詢。</p>
+        <ul class="compliance-chips">
+          <li>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            ISO 27001 控制框架
+          </li>
+          <li>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            SOC 2 Type II 稽核面向
+          </li>
+          <li>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            傳輸與靜態加密
+          </li>
+          <li>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            RBAC 與稽核日誌
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 聯絡 / 企業詢問表單 ===== -->
+  <section class="section" id="contact" data-od-id="contact">
+    <div class="container contact-grid">
+      <div class="contact-intro reveal">
+        <p class="eyebrow">企業合作</p>
+        <h2 data-od-id="contact-heading">與我們談談您的<br />城市或企業專案</h2>
+        <p>留下您的需求,解決方案架構師將在一個工作天內與您聯繫,安排 30 分鐘的技術演示與部署評估。</p>
+        <ul class="contact-rows" data-od-id="contact-info">
+          <li><span class="row-label">企業方案</span><a href="mailto:enterprise@greenova.example">enterprise@greenova.example</a></li>
+          <li><span class="row-label">技術諮詢</span><a href="mailto:support@greenova.example">support@greenova.example</a></li>
+          <li><span class="row-label">回覆時效</span><span class="row-val">一個工作天內</span></li>
+        </ul>
+      </div>
+
+      <!-- 表單卡片 -->
+      <div class="form-card reveal">
+        <form id="contact-form" data-od-id="contact-form" novalidate>
+          <p class="form-title">企業需求表單</p>
+          <div class="form-row">
+            <div class="field">
+              <label for="f-company">公司 / 機構<span class="req" aria-hidden="true">*</span></label>
+              <input id="f-company" name="company" type="text" autocomplete="organization" placeholder="○○市政府 / ○○科技" required />
+              <p class="field-error">請填寫公司或機構名稱。</p>
+            </div>
+            <div class="field">
+              <label for="f-name">聯絡人姓名<span class="req" aria-hidden="true">*</span></label>
+              <input id="f-name" name="name" type="text" autocomplete="name" placeholder="王小明" required />
+              <p class="field-error">請填寫聯絡人姓名。</p>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label for="f-email">企業信箱<span class="req" aria-hidden="true">*</span></label>
+              <input id="f-email" name="email" type="email" autocomplete="email" placeholder="name@company.com" required />
+              <p class="field-error">請填寫有效的電子郵件地址。</p>
+            </div>
+            <div class="field">
+              <label for="f-type">組織類型</label>
+              <select id="f-type" name="type">
+                <option value="gov">城市政府 / 公部門</option>
+                <option value="utility">公用事業(電力 / 水務)</option>
+                <option value="enterprise" selected>企業</option>
+                <option value="integrator">系統整合商</option>
+                <option value="other">其他</option>
+              </select>
+            </div>
+          </div>
+          <div class="field" style="margin-bottom: 20px;">
+            <label for="f-msg">需求說明</label>
+            <textarea id="f-msg" name="message" placeholder="請簡述您想最佳化的基礎設施場景,例如:區域電網調度、園區碳盤查、感測網路建置…"></textarea>
+          </div>
+          <div class="consent" id="consent-row">
+            <input type="checkbox" id="f-consent" required />
+            <label for="f-consent">我同意 Greenova 依隱私權政策處理上述資料,僅用於與我聯繫。<span class="req" aria-hidden="true">*</span></label>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" data-od-id="form-submit">提交需求</button>
+        </form>
+
+        <!-- 送出成功狀態(預設隱藏) -->
+        <div class="form-success" id="form-success" hidden tabindex="-1">
+          <div class="success-icon" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M5 13.5l5.5 5.5L21 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </div>
+          <h3>已收到您的需求</h3>
+          <p>感謝您對 Greenova 的興趣。解決方案架構師將在一個工作天內與您聯繫。</p>
+          <p class="ref-code" id="ref-code">案件編號 GN-000000</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ===== 頁尾 ===== -->
+<footer class="site-footer" data-od-id="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a class="brand" href="#top" aria-label="回到頁首">
+        <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+          <rect x="1" y="1" width="24" height="24" rx="5" fill="var(--accent)" />
+          <path d="M7.5 16.5 11.5 11l2.8 3.6L18.5 9" stroke="var(--accent-ink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          <circle cx="18.5" cy="9" r="1.5" fill="var(--accent-ink)" />
+        </svg>
+        <span class="brand-word">Greenova</span>
+      </a>
+      <p>以人工智慧與即時環境分析,驅動下一代永續城市基礎設施。</p>
+    </div>
+    <nav class="footer-col" aria-label="產品導覽">
+      <h4>產品</h4>
+      <ul>
+        <li><a href="#platform">平台概覽</a></li>
+        <li><a href="#tech">核心技術</a></li>
+        <li><a href="#deploy">部署方案</a></li>
+        <li><a href="#contact">預約演示</a></li>
+      </ul>
+    </nav>
+    <nav class="footer-col" aria-label="公司導覽">
+      <h4>公司</h4>
+      <ul>
+        <li><a href="#about">關於我們</a></li>
+        <li><a href="#contact">企業合作</a></li>
+        <li><a href="mailto:press@greenova.example">媒體洽詢</a></li>
+      </ul>
+    </nav>
+    <nav class="footer-col" aria-label="資源導覽">
+      <h4>資源</h4>
+      <ul>
+        <li><a href="#" data-dead-link>API 文件</a></li>
+        <li><a href="#" data-dead-link>系統狀態</a></li>
+        <li><a href="#" data-dead-link>安全白皮書</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="container footer-bottom">
+    <p>© <span id="year">2026</span> Greenova Technologies. 保留一切權利。</p>
+    <div class="footer-legal">
+      <a href="#" data-dead-link>隱私權政策</a>
+      <a href="#" data-dead-link>服務條款</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================================
+     Greenova 企業版單頁官網 — JavaScript 區塊
+     模組:
+       00 共用工具
+       01 導覽列(行動選單 / 占位連結)
+       02 主控台感測網路 Canvas(3D 動畫占位的沉穩實作)
+       03 碳強度串流圖表 + 模擬指標磁貼
+       04 聯絡表單驗證與送出
+       05 捲動進場(IntersectionObserver)
+       06 頁尾年份
+     ============================================================ -->
+<script>
+(() => {
+  "use strict";
+
+  /* ---------- 00 共用工具 ---------- */
+  const $  = (sel, ctx = document) => ctx.querySelector(sel);
+  const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
+  const DPR = Math.min(window.devicePixelRatio || 1, 2); // 限制 DPR 兼顧效能
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /** 依元素實際尺寸調整 canvas 解析度,回傳 2D 上下文與 CSS 像素尺寸 */
+  function fitCanvas(canvas) {
+    const { clientWidth: w, clientHeight: h } = canvas;
+    canvas.width  = Math.max(1, Math.round(w * DPR));
+    canvas.height = Math.max(1, Math.round(h * DPR));
+    const ctx = canvas.getContext("2d");
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    return { ctx, w, h };
+  }
+
+  /** 繪圖色票(與 CSS token 對齊) */
+  const INK = {
+    accent: "oklch(0.45 0.090 162)",
+    viz:    "oklch(0.72 0.170 155)",
+    slate:  "oklch(0.52 0.030 240)",
+    grid:   "oklch(0.930 0.006 150)",
+    edge:   "oklch(0.880 0.010 155)",
+    muted:  "oklch(0.48 0.020 240)",
+    border: "oklch(0.912 0.006 150)",
+  };
+
+  /* ---------- 01 導覽列 ---------- */
+  const navToggle = $("#nav-toggle");
+  const navMenu = $("#nav-menu");
+
+  // 行動版選單開合
+  navToggle.addEventListener("click", () => {
+    const open = navMenu.classList.toggle("is-open");
+    navToggle.setAttribute("aria-expanded", String(open));
+    navToggle.setAttribute("aria-label", open ? "關閉選單" : "開啟選單");
+  });
+  // 點擊選單連結後自動收合
+  navMenu.addEventListener("click", (e) => {
+    if (e.target.closest("a")) {
+      navMenu.classList.remove("is-open");
+      navToggle.setAttribute("aria-expanded", "false");
+    }
+  });
+
+  // 占位連結(文件 / 法律頁)僅阻止跳轉
+  $$("[data-dead-link]").forEach((a) => a.addEventListener("click", (e) => e.preventDefault()));
+
+  /* ---------- 02 主控台感測網路 Canvas ----------
+     沉穩版:節點位置固定,僅以緩慢脈衝環與鏈路封包表達「運行中」;
+     無游標互動,避免新創式的炫技感。 */
+  (function heroNet() {
+    const canvas = $("#hero-net");
+    if (!canvas) return;
+    let ctx, w, h, nodes = [], edges = [], packets = [];
+    let rafId = null, last = 0, spawnAt = 0;
+    const LINK = 120; // 連線距離(px)
+
+    /** 依畫布尺寸建立節點與鄰近連線;每 6 個節點設一個「閘道節點」(強調色) */
+    function build() {
+      const count = w < 560 ? 30 : 42;
+      nodes = Array.from({ length: count }, (_, i) => ({
+        x: 12 + Math.random() * (w - 24),
+        y: 12 + Math.random() * (h - 24),
+        hot: i % 6 === 0,
+        phase: Math.random(),          // 脈衝相位(0–1)
+        speed: 0.5 + Math.random() * 0.7, // 脈衝速率倍率
+      }));
+      edges = [];
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const a = nodes[i], b = nodes[j];
+          if (Math.hypot(a.x - b.x, a.y - b.y) < LINK) edges.push([a, b]);
+        }
+      }
+    }
+
+    function resize() { ({ ctx, w, h } = fitCanvas(canvas)); build(); draw(0); }
+
+    function draw(t) {
+      ctx.clearRect(0, 0, w, h);
+
+      // 背景藍圖網格(極淡,襯出主控台質感)
+      ctx.strokeStyle = INK.grid;
+      ctx.lineWidth = 1;
+      ctx.globalAlpha = 0.55;
+      const g = 44;
+      for (let x = g; x < w; x += g) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+      for (let y = g; y < h; y += g) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+      ctx.globalAlpha = 1;
+
+      // 節點連線(閘道相關連線略實)
+      ctx.strokeStyle = INK.edge;
+      for (const [a, b] of edges) {
+        ctx.globalAlpha = (a.hot || b.hot) ? 0.5 : 0.3;
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+      }
+
+      // 節點 + 緩慢擴散的脈衝環
+      for (const n of nodes) {
+        const p = (t * n.speed / 3600 + n.phase) % 1; // 0→1 循環
+        if (p < 0.5) {
+          const r = 4 + p * 2 * 16;
+          ctx.globalAlpha = (1 - p * 2) * (n.hot ? 0.4 : 0.22);
+          ctx.strokeStyle = n.hot ? INK.accent : INK.slate;
+          ctx.beginPath(); ctx.arc(n.x, n.y, r, 0, Math.PI * 2); ctx.stroke();
+        }
+        ctx.globalAlpha = n.hot ? 0.95 : 0.55;
+        ctx.fillStyle = n.hot ? INK.accent : INK.slate;
+        ctx.beginPath(); ctx.arc(n.x, n.y, n.hot ? 2.4 : 1.6, 0, Math.PI * 2); ctx.fill();
+      }
+
+      // 鏈路封包(沿既有連線移動的資料點)
+      ctx.fillStyle = INK.viz;
+      for (const pk of packets) {
+        const x = pk.a.x + (pk.b.x - pk.a.x) * pk.t;
+        const y = pk.a.y + (pk.b.y - pk.a.y) * pk.t;
+        ctx.globalAlpha = 0.9;
+        ctx.beginPath(); ctx.arc(x, y, 2, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    function tick(ts) {
+      if (!last) last = ts;
+      const dt = ts - last;
+      last = ts;
+      // 每 1.2 秒派生一個封包(上限 6 個)
+      if (ts > spawnAt && edges.length && packets.length < 6) {
+        const [a, b] = edges[Math.floor(Math.random() * edges.length)];
+        packets.push({ a, b, t: 0, dur: 1300 + Math.random() * 900 });
+        spawnAt = ts + 1200;
+      }
+      packets = packets.filter((p) => { p.t += dt / p.dur; return p.t <= 1; });
+      draw(ts);
+      rafId = requestAnimationFrame(tick);
+    }
+
+    resize();
+    window.addEventListener("resize", resize);
+    if (reduceMotion) return; // 減少動態:僅保留靜態一幀
+    rafId = requestAnimationFrame(tick);
+    // 分頁隱藏時暫停動畫,節省資源
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) { cancelAnimationFrame(rafId); rafId = null; }
+      else if (!rafId) { last = 0; rafId = requestAnimationFrame(tick); }
+    });
+  })();
+
+  /* ---------- 03 碳強度串流圖表 + 模擬指標磁貼 ---------- */
+  (function liveChart() {
+    const canvas = $("#demo-chart");
+    if (!canvas) return;
+    const toggleBtn = $("#chart-toggle");
+    const liveBadge = $("#chart-live");
+    const elLoad       = $("#stat-load");
+    const elLoadDelta  = $("#stat-load-delta");
+    const elSensors    = $("#stat-sensors");
+    const elCarbon     = $("#stat-carbon");
+    const elCarbonDelta = $("#stat-carbon-delta");
+
+    const POINTS = 60;    // 滾動窗口:60 個取樣點
+    const INTERVAL = 900; // 推進間隔(ms)
+    let ctx, w, h, timer = null, running = true;
+
+    // 以基線 + 緩變正弦 + 雜訊產生合理的模擬碳強度序列
+    let step = 0;
+    const nextCarbon = () =>
+      412 + Math.sin(step * 0.14) * 26 + Math.sin(step * 0.045) * 14 + (Math.random() - 0.5) * 10;
+    const data = Array.from({ length: POINTS }, () => { step++; return nextCarbon(); });
+
+    function resize() { ({ ctx, w, h } = fitCanvas(canvas)); draw(); }
+
+    function draw() {
+      ctx.clearRect(0, 0, w, h);
+      const padL = 44, padR = 14, padT = 14, padB = 26;
+      const plotW = w - padL - padR, plotH = h - padT - padB;
+      const min = Math.min(...data) - 8, max = Math.max(...data) + 8;
+      const xAt = (i) => padL + (plotW * i) / (POINTS - 1);
+      const yAt = (v) => padT + plotH * (1 - (v - min) / (max - min));
+
+      // 水平網格與 Y 軸標籤(等寬字)
+      ctx.font = "10px 'IBM Plex Mono', monospace";
+      ctx.fillStyle = INK.muted;
+      ctx.strokeStyle = INK.border;
+      ctx.lineWidth = 1;
+      for (let g = 0; g <= 3; g++) {
+        const v = min + ((max - min) * g) / 3;
+        const y = yAt(v);
+        ctx.globalAlpha = 0.7;
+        ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(w - padR, y); ctx.stroke();
+        ctx.globalAlpha = 1;
+        ctx.fillText(Math.round(v).toString(), 6, y + 3);
+      }
+
+      // 面積漸層(企業深綠,由上而下淡出)
+      const grad = ctx.createLinearGradient(0, padT, 0, padT + plotH);
+      grad.addColorStop(0, "oklch(0.45 0.090 162 / 0.16)");
+      grad.addColorStop(1, "oklch(0.45 0.090 162 / 0)");
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.moveTo(xAt(0), yAt(data[0]));
+      for (let i = 1; i < POINTS; i++) ctx.lineTo(xAt(i), yAt(data[i]));
+      ctx.lineTo(xAt(POINTS - 1), padT + plotH);
+      ctx.lineTo(xAt(0), padT + plotH);
+      ctx.closePath();
+      ctx.fill();
+
+      // 平滑折線(中點二次曲線)
+      ctx.strokeStyle = INK.accent;
+      ctx.lineWidth = 2;
+      ctx.lineJoin = "round";
+      ctx.beginPath();
+      ctx.moveTo(xAt(0), yAt(data[0]));
+      for (let i = 1; i < POINTS - 1; i++) {
+        const xc = (xAt(i) + xAt(i + 1)) / 2;
+        const yc = (yAt(data[i]) + yAt(data[i + 1])) / 2;
+        ctx.quadraticCurveTo(xAt(i), yAt(data[i]), xc, yc);
+      }
+      ctx.lineTo(xAt(POINTS - 1), yAt(data[POINTS - 1]));
+      ctx.stroke();
+
+      // 最新值端點(數據視覺色)
+      ctx.fillStyle = INK.viz;
+      ctx.beginPath();
+      ctx.arc(xAt(POINTS - 1), yAt(data[POINTS - 1]), 3.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    /** 推進一個取樣點並重繪 */
+    function advance() {
+      step++;
+      data.push(nextCarbon());
+      data.shift();
+      draw();
+      elCarbon.textContent = Math.round(data[POINTS - 1]).toString();
+    }
+
+    // 磁貼數值隨機漫步(模擬即時感)
+    let load = 412.6, sensors = 8742;
+    function tickTiles() {
+      const prevLoad = load;
+      load = Math.min(450, Math.max(380, load + (Math.random() - 0.5) * 6));
+      sensors = Math.min(8800, Math.max(8680, sensors + Math.round((Math.random() - 0.5) * 8)));
+      elLoad.textContent = load.toFixed(1);
+      elSensors.textContent = sensors.toLocaleString("en-US");
+      const d = load - prevLoad;
+      elLoadDelta.textContent = Math.abs(d) < 0.05
+        ? "— 較上一分鐘持平"
+        : `${d > 0 ? "▲" : "▼"} 較上一分鐘${d > 0 ? "上升" : "下降"} ${Math.abs(d).toFixed(1)} MW`;
+      elCarbonDelta.textContent = "— 滾動 60 秒均值";
+    }
+
+    function start() {
+      if (timer || reduceMotion) return;
+      timer = setInterval(() => { advance(); }, INTERVAL);
+    }
+    function stop() { clearInterval(timer); timer = null; }
+
+    // 暫停 / 繼續切換
+    toggleBtn.addEventListener("click", () => {
+      running = !running;
+      toggleBtn.textContent = running ? "暫停" : "繼續";
+      toggleBtn.setAttribute("aria-pressed", String(running));
+      liveBadge.classList.toggle("is-paused", !running);
+      liveBadge.lastChild.textContent = running ? "LIVE · 模擬" : "已暫停 · 模擬";
+      if (running) start(); else stop();
+    });
+
+    resize();
+    window.addEventListener("resize", resize);
+    if (!reduceMotion) {
+      start();
+      setInterval(tickTiles, 2400);
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) stop();
+        else if (running) start();
+      });
+    } else {
+      // 減少動態:徽章改為靜態標註
+      liveBadge.classList.add("is-paused");
+      liveBadge.lastChild.textContent = "靜態 · 模擬";
+    }
+  })();
+
+  /* ---------- 04 聯絡表單驗證與送出 ---------- */
+  (function contactForm() {
+    const form = $("#contact-form");
+    if (!form) return;
+    const success = $("#form-success");
+    const refCode = $("#ref-code");
+    const consentRow = $("#consent-row");
+    const consent = $("#f-consent");
+
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    /** 標記 / 清除欄位錯誤狀態 */
+    function setError(input, on) {
+      input.closest(".field").classList.toggle("has-error", on);
+    }
+
+    // 輸入時即時清除錯誤
+    $$("input, select, textarea", form).forEach((el) => {
+      el.addEventListener("input", () => {
+        if (el.closest(".field")) setError(el, false);
+        if (el === consent) consentRow.classList.remove("has-error");
+      });
+    });
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault(); // 前端示範:無後端,改接 fetch() 即可上線
+      let valid = true;
+      let firstBad = null;
+
+      // 必填文字欄位
+      ["#f-company", "#f-name"].forEach((sel) => {
+        const el = $(sel);
+        const bad = !el.value.trim();
+        setError(el, bad);
+        if (bad) { valid = false; firstBad = firstBad || el; }
+      });
+
+      // 信箱格式
+      const email = $("#f-email");
+      const emailBad = !emailRe.test(email.value.trim());
+      setError(email, emailBad);
+      if (emailBad) { valid = false; firstBad = firstBad || email; }
+
+      // 隱私同意
+      const consentBad = !consent.checked;
+      consentRow.classList.toggle("has-error", consentBad);
+      if (consentBad) { valid = false; firstBad = firstBad || consent; }
+
+      if (!valid) { firstBad.focus(); return; }
+
+      // 成功:產生案件編號並切換成功狀態
+      refCode.textContent = "案件編號 GN-" + String(Math.floor(100000 + Math.random() * 900000));
+      form.hidden = true;
+      success.hidden = false;
+      success.focus();
+    });
+  })();
+
+  /* ---------- 05 捲動進場 ---------- */
+  (function revealOnScroll() {
+    const els = $$(".reveal");
+    if (reduceMotion || !("IntersectionObserver" in window)) {
+      els.forEach((el) => el.classList.add("is-visible"));
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting) {
+          en.target.classList.add("is-visible");
+          io.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+    els.forEach((el) => io.observe(el));
+  })();
+
+  /* ---------- 06 頁尾年份 ---------- */
+  const yearEl = $("#year");
+  if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+})();
+</script>
+</body>
+</html>
